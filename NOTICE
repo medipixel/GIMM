@@ -1,0 +1,19 @@
+GIMM — Anatomy-Grounded Synthetic Coronary Angiography for
+Geometry-Informed Multi-View Matching
+
+Copyright 2026 Medipixel, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License"); see the
+LICENSE file. You may not use these files except in compliance with the License.
+
+------------------------------------------------------------------------
+This product includes and/or is derived from third-party software:
+
+* LoFTR — https://github.com/zju3dv/LoFTR
+  Copyright (c) 2021 ZJU3DV (Zhejiang University) and SenseTime Research.
+  Licensed under the Apache License, Version 2.0.
+  The correspondence-model code under src/loftr/ is derived from LoFTR.
+
+* QuadTree Attention — https://github.com/Tangshitao/QuadTreeAttention
+  Used as the CUDA attention extension (git submodule under
+  third_party/QuadTreeAttention); governed by its own upstream license.

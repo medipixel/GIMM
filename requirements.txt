@@ -1,0 +1,26 @@
+# GIMM model + synthetic-DRR evaluation dependencies.
+# (The training pipeline is not part of this release; its extra deps are omitted.)
+
+# Install PyTorch matching your CUDA first; these pin to the paper's environment
+# (Python 3.8, CUDA 10.2):
+torch==1.8.1
+
+einops==0.3.0
+kornia==0.4.1
+timm==0.4.12
+yacs>=0.1.8
+loguru==0.5.3
+numpy
+scipy
+opencv-python==4.4.0.46   # cv2, used by src/loftr/utils/fine_matching.py
+pandas
+Pillow
+matplotlib
+tqdm
+joblib>=1.0.1
+pytorch-lightning==1.3.5   # required by src/utils/misc.py (rank_zero_only)
+torchmetrics==0.6.0        # pinned for pytorch-lightning 1.3.5 compatibility
+
+# QuadTree and GIMM additionally require the QuadtreeAttention CUDA extension, built
+# from the bundled submodule (see README -> Model & Evaluation):
+#   cd third_party/QuadTreeAttention/QuadTreeAttention && python setup.py install

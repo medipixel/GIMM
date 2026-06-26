@@ -1,0 +1,28 @@
+from src.config.default import _CN as cfg
+
+cfg.LOFTR.MATCH_COARSE.MATCH_TYPE = "dual_softmax"
+
+cfg.LOFTR.MATCH_COARSE.SPARSE_SPVS = False
+cfg.LOFTR.MATCH_COARSE.TRAIN_COARSE_PERCENT = 0.3
+
+cfg.LOFTR.RESNETFPN.INITIAL_DIM = 128
+cfg.LOFTR.RESNETFPN.BLOCK_DIMS = [128, 196, 256]
+cfg.LOFTR.COARSE.D_MODEL = 256
+cfg.LOFTR.COARSE.BLOCK_TYPE = "quadtree"
+cfg.LOFTR.COARSE.ATTN_TYPE = "B"
+cfg.LOFTR.COARSE.TOPKS = [16, 8, 8]
+
+cfg.LOFTR.FINE.D_MODEL = 128
+
+cfg.TRAINER.CANONICAL_LR = 8e-3
+
+# split_length is dataset-dependent (training-only); the released runs used 5.
+cfg.TRAINER.WARMUP_STEP = 25
+
+cfg.TRAINER.WARMUP_RATIO = 0.1
+cfg.TRAINER.MSLR_MILESTONES = [15, 30, 45, 60, 75]
+
+cfg.TRAINER.RANSAC_PIXEL_THR = 0.5
+
+cfg.TRAINER.OPTIMIZER = "adamw"
+cfg.TRAINER.ADAMW_DECAY = 0.1

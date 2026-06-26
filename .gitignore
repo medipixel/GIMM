@@ -1,0 +1,116 @@
+# ---------------------------------------------------------------------------
+# Python
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+develop-eggs/
+downloads/
+*.egg-info/
+.eggs/
+.installed.cfg
+*.egg
+pip-wheel-metadata/
+
+# ---------------------------------------------------------------------------
+# Virtual environments
+# ---------------------------------------------------------------------------
+.venv/
+venv/
+env/
+ENV/
+.conda/
+
+# ---------------------------------------------------------------------------
+# Jupyter / IPython
+# ---------------------------------------------------------------------------
+.ipynb_checkpoints/
+profile_default/
+ipython_config.py
+
+# ---------------------------------------------------------------------------
+# Tooling caches
+# ---------------------------------------------------------------------------
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.dmypy.json
+.cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+
+# ---------------------------------------------------------------------------
+# Environments / secrets
+# ---------------------------------------------------------------------------
+.env
+.env.*
+*.secret
+
+# ---------------------------------------------------------------------------
+# OS / editor cruft
+# ---------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
+
+# ---------------------------------------------------------------------------
+# Experiment tracking / logs / run outputs
+# ---------------------------------------------------------------------------
+wandb/
+runs/
+lightning_logs/
+tb_logs/
+events.out.tfevents.*
+logs/
+outputs/
+output/
+test_results/
+inference_visualization/
+
+# ---------------------------------------------------------------------------
+# Model checkpoints / weights
+# ---------------------------------------------------------------------------
+checkpoints/
+weights/
+*.ckpt
+*.pth
+*.pt
+*.onnx
+*.safetensors
+
+# ---------------------------------------------------------------------------
+# Datasets / large artifacts
+#   (README figures stay tracked: images are kept unless under data dirs)
+# ---------------------------------------------------------------------------
+# anchored to repo root so they don't catch source dirs like training/configs/data/
+/data/
+/datasets/
+/Datas/
+*.npz
+*.npy
+*.h5
+*.hdf5
+
+# Medical imaging volumes
+*.dcm
+*.nii
+*.nii.gz
+*.mha
+*.mhd
+*.nrrd
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
