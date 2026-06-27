@@ -249,6 +249,99 @@ python run_synthetic_eval.py \
 It expects `voxel_spacing_dict.json` (ImageCAS voxel spacings) in `--dataset_root`
 (override with `--voxel_json`). Run with `--help` for all options.
 
+### Evaluating on real angiography (`run_real_eval.py`)
+
+`run_real_eval.py` evaluates a matcher based on GIMM or LoFTR architecture on **real**
+coronary angiography pairs annotated with JSON format, where dense projection
+ground truth is unavailable. Instead of 3D labels it uses a **centerline-ratio
+projection**: each matched point is snapped to the nearest vessel centerline,
+converted to a normalized arc-length ratio bracketed by two anatomical landmarks
+(`Proximal`, `Mid1` … `Distal4`), and mapped onto the matching bracket of the
+other image's centerline to obtain the expected location. The pixel gap between
+prediction and that location is the error. It reports micro/macro summaries
+(mean/median px, **precision@5px / @10px**, landmark recall, arc-length
+coverage, F1/F2) plus optional per-pair histograms and visualizations.
+
+**Inputs.** An annotation JSON (`--json`) holding keypoint landmark labels per
+image, and a data root (`--path_root`) that contains, for every referenced image
+stem, `centerlines_npz/<stem>.npz` (vessel branch polylines) and
+`vessel_masks/<stem>.png` (binary vessel masks). `--centerline_root` defaults to
+`--path_root`.
+
+**Annotation format.** `--json` is an array of image-pair items. Each item's
+`data` block names the two images and their vessel/view classes, and its
+`annotations[0].result` list holds the keypoint landmarks for each image. A
+keypoint entry targets one image via `to_name` (`img-1` / `img-2`), gives `x`/`y`
+as **percentages (0–100)** of `original_width`/`original_height`, and carries one
+landmark name from `Proximal`, `Mid1 … Mid10`, `Distal1 … Distal4` (proximal →
+distal). `image_path` values may be plain paths or `/data/local-files/?d=…`
+storage references resolved against `--path_root`.
+
+```json
+[
+  {
+    "data": {
+      "org_image1": "/data/local-files/?d=case01_view_A.png",
+      "org_image2": "/data/local-files/?d=case01_view_B.png",
+      "vessel_label_1": "RCA", "view_label_1": "AP Cranial",
+      "vessel_label_2": "RCA", "view_label_2": "LAO"
+    },
+    "annotations": [
+      { "result": [
+        { "type": "keypointlabels", "to_name": "img-1",
+          "original_width": 512, "original_height": 512,
+          "value": { "x": 41.2, "y": 18.7, "keypointlabels": ["Proximal"] } },
+        { "type": "keypointlabels", "to_name": "img-2",
+          "original_width": 512, "original_height": 512,
+          "value": { "x": 39.8, "y": 22.1, "keypointlabels": ["Proximal"] } }
+      ] }
+    ]
+  }
+]
+```
+
+A landmark is a **cross-view correspondence** when the same name appears on both
+`img-1` and `img-2` of a pair. Pairs flagged non-contrast (a `choices` result
+under `non-contrast-1`/`non-contrast-2`) are skipped.
+
+**Matching pipeline.** Predicted matches are filtered in order: (1) keep matches
+landing on the vessel mask in both images, (2) keep matches within
+`--max_centerline_dist` px of a centerline in both images, (3) keep the top
+`--topk` by confidence, then (4) project through the centerline brackets and
+measure pixel error in **both** directions (A→B and B→A). Reported per-pair counts
+(`num_matches_mask`, `num_matches_centerline`, `num_matches_selected`,
+`num_matches_scored`, …) expose how many matches survive each stage. The
+projection scoring follows the paper's fixed configuration (bidirectional error,
+prediction-driven selection with ground truth used only for scoring); there are
+no flags to change it.
+
+| Argument | Meaning |
+|---|---|
+| `--json` *(required)* | annotation export JSON path |
+| `--weight_path` *(required)* | model checkpoint (`.ckpt`/`.pth`); auto-detects LoFTR vs. ASpan from `--main_cfg_path` |
+| `--main_cfg_path` / `--data_cfg_path` | model / data config (defaults: `loftr_ds_quadtree.py`, `angio_cip_512.py`) |
+| `--path_root` / `--centerline_root` | data root(s) holding `centerlines_npz/` and `vessel_masks/` |
+| `--output` | output JSON report path |
+| `--max_centerline_dist` | drop matches farther than N px from the centerline (default 5) |
+| `--topk` | keep top-K matches by confidence before projection (0 = all) |
+| `--coarse_thr` / `--fine_thr` | override matcher confidence thresholds |
+| `--viz_max` / `--viz_dir` | save up to N side-by-side prediction visualizations |
+| `--hist_dir` | directory for per-metric histograms |
+
+```bash
+python run_real_eval.py \
+    --json /path/to/annotations.json \
+    --main_cfg_path configs/loftr/outdoor/GIMM.py \
+    --data_cfg_path configs/data/angio_cip_512.py \
+    --weight_path /path/to/checkpoint.ckpt \
+    --path_root /path/to/data \
+    --centerline_root /path/to/data/outputs \
+    --max_centerline_dist 5 --topk 20 \
+    --coarse_thr 0.0 --fine_thr 0.0 \
+    --output outputs/real_eval/results.json \
+    --viz_max 20
+```
+
 ---
 
 ## Citation
