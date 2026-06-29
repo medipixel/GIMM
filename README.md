@@ -233,7 +233,8 @@ matcher = LoFTR(config=lower_config(config)["loftr"]).eval()
 # forward(data): data has image0,image1 (N,1,H,W); GIMM FiLM reads optional view0_cls/view1_cls.
 ```
 
-**Quick demo** — with the GIMM checkpoint (`GIMM.ckpt`) at the repo root:
+**Weights & demo** — the pretrained GIMM checkpoint (`GIMM.ckpt`) is available
+upon request: please email the authors to obtain it. With it placed at the repo root:
 
 ```bash
 python demo.py --weight_path GIMM.ckpt                                 # random-tensor smoke test
