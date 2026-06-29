@@ -233,6 +233,13 @@ matcher = LoFTR(config=lower_config(config)["loftr"]).eval()
 # forward(data): data has image0,image1 (N,1,H,W); GIMM FiLM reads optional view0_cls/view1_cls.
 ```
 
+**Quick demo** — with the GIMM checkpoint (`GIMM.ckpt`) at the repo root:
+
+```bash
+python demo.py --weight_path GIMM.ckpt                                 # random-tensor smoke test
+python demo.py --weight_path GIMM.ckpt --image0 a.png --image1 b.png   # match a grayscale pair
+```
+
 **Evaluate** — `run_synthetic_eval.py` reports the paper's synthetic metrics (mean
 **2D** distance px, mean **3D** distance mm, **precision@3px / @5px**) at
 **TopK = 20** on the orthographic test set `angio_cip_sparse_RCA_LCA_fps_20_testset`
